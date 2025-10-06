@@ -1,0 +1,21 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r api/requirements.txt
+  displayName: 'Install dependencies'
+
+- script: |
+    docker build -t azure-demo .
+    docker run -d -p 8000:8000 azure-demo
+  displayName: 'Build and run Docker container'
